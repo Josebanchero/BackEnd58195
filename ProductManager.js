@@ -9,7 +9,7 @@ class ProductManager {
 
   async addProduct(product) {
     // Validar campos obligatorios
-    if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
+    if (!product.title || !product.description || !product.code || !product.price || !product.stock || !product.category) {
       console.error("Todos los campos son obligatorios");
       return;
     }
@@ -25,6 +25,9 @@ class ProductManager {
 
     // Asignar id autoincrementable y agregar el nuevo producto
     product.id = this.autoIncrementId++;
+    product.status = true; // Status es true por defecto
+    product.thumbnails = product.thumbnails || []; // Thumbnails es un array de strings
+
     this.products.push(product);
 
     // Guardar en el archivo
@@ -33,9 +36,14 @@ class ProductManager {
     console.log("Producto agregado correctamente:", product);
   }
 
-  async getProducts() {
+  async getProducts(limit) {
     await this.loadProductsFromFile();
-    return this.products;
+
+    if (limit) {
+      return this.products.slice(0, limit);
+    } else {
+      return this.products;
+    }
   }
 
   async getProductById(id) {
