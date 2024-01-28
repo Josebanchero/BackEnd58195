@@ -1,0 +1,50 @@
+<!-- views/realTimeProducts.handlebars -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Time Products</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Función para enviar un nuevo producto al servidor mediante socket.emit
+    function createProduct() {
+      const title = prompt('Ingrese el título del producto:');
+      const description = prompt('Ingrese la descripción del producto:');
+      const price = parseFloat(prompt('Ingrese el precio del producto:'));
+      const newProduct = { title, description, price };
+
+      socket.emit('createProduct', newProduct);
+    }
+
+    // Función para eliminar un producto al servidor mediante socket.emit
+    function deleteProduct(productId) {
+      socket.emit('deleteProduct', productId);
+    }
+
+    // Función para manejar la actualización de la lista de productos desde el servidor
+    socket.on('updateProducts', (products) => {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = '';
+
+      products.forEach((product) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${product.title} - ${product.description} - ${product.price}`;
+        productList.appendChild(listItem);
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Lista de Productos en Tiempo Real</h1>
+  <button onclick="createProduct()">Agregar Producto</button>
+  <ul id="product-list">
+    {{#each products}}
+      <li>{{this.title}} - {{this.description}} - {{this.price}} <button onclick="deleteProduct('{{this.id}}')">Eliminar</button></li>
+    {{/each}}
+  </ul>
+</body>
+</html>
