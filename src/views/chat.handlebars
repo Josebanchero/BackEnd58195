@@ -1,0 +1,57 @@
+<!-- views/chat.handlebars -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+</head>
+<body>
+  <div id="chat-container">
+  
+  </div>
+  <input type="text" id="message-input" placeholder="Escribe un mensaje">
+  <button onclick="sendMessage()">Enviar</button>
+
+ 
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+  <script>
+    const socket = io(); 
+
+    const messages = [
+      { user: 'Usuario1', message: '¡Hola!'},
+      { user: 'Usuario2', message: '¿Cómo estás?'},
+      { user: 'Usuario1', message: 'Bien, gracias.'},
+    ];
+
+    const chatContainer = document.getElementById('chat-container');
+    messages.forEach((msg) => {
+      appendMessage(msg);
+    });
+
+    
+    function sendMessage() {
+      const userInput = document.getElementById('message-input');
+      const message = userInput.value;
+
+   
+      socket.emit('chat message', { user: 'Usuario Actual', message });
+
+      
+      userInput.value = '';
+    }
+
+    // Manejar mensajes recibidos del servidor de Socket.io
+    socket.on('chat message', (msg) => {
+      appendMessage(msg);
+    });
+
+    // Función para agregar un mensaje al contenedor del chat
+    function appendMessage(msg) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = `${msg.user}: ${msg.message}`;
+      chatContainer.appendChild(messageElement);
+    }
+  </script>
+</body>
+</html>

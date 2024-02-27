@@ -1,0 +1,16 @@
+|-- Dao
+|   |-- dao.js
+|   |-- models
+|       |-- cartModel.js
+|       |-- messageModel.js
+|       |-- productModel.js
+|-- public
+|-- views
+|   |-- chat.handlebars
+|   |-- home.handlebars
+|   |-- realTimeProducts.handlebars
+|-- .gitignore
+|-- app.js
+|-- package.json
+|-- ProductManager.js
+|-- utils.js
