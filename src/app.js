@@ -1,10 +1,14 @@
-// app.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const http = require('http');
 const socketIO = require('socket.io');
 const fs = require('fs').promises;
+const path = require('path');
+
+
+
 
 const { generateUniqueId } = require('./utils'); // Importar la función desde utils.js
 const ProductManager = require('./ProductManager');
@@ -21,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const productManager = new ProductManager('productos.json');
 
 // Configuración de Handlebars
-app.engine('.hbs', exphbs({ extname: '.hbs' }));
-app.set('view engine', '.hbs');
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
 
 // Rutas para productos
 app.post('/addProduct', async (req, res) => {
@@ -45,6 +49,24 @@ app.post('/addProduct', async (req, res) => {
   }
 });
 
+// Ruta a la vista home
+app.get('/', (req, res) => {
+  res.render('home');
+});
+
+// Ruta a la vista realtimeproducts
+app.get('/realtimeproducts', (req, res) => {
+  res.render('realtimeproducts');
+});
+
+// Configuración de la carpeta de vistas
+app.set('views', path.join(__dirname, 'views'));
+
+// Configuración del servidor
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 
 // Manejo de WebSockets
@@ -83,3 +105,4 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
 });
+

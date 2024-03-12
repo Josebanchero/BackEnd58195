@@ -4,14 +4,15 @@
     "description": "Este es un proyecto para el curso de Back End de CoderHouse",
     "main": "app.js",
     "scripts": {
-      "start": "node app.js"
+        "start": "node app.js"
     },
     "dependencies": {
-      "express": "^4.17.1",
-      "express-handlebars": "^5.3.3",
-      "socket.io": "^4.1.2"
+        "express": "^4.17.1",
+        "express-handlebars": "^5.3.3",
+        "mongoose": "^8.2.1",
+        "socket.io": "^4.1.2"
     },
     "author": "Josefina Banchero",
     "license": "MIT"
+
   }
-  

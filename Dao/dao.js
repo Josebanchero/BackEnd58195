@@ -1,28 +1,21 @@
+
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/ecommerce', {
+
+// URL de conexión a MongoDB
+const mongoURI = 'mongodb://localhost:27017/nombre-de-tu-base-de-datos';
+
+// Conexión a MongoDB
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-const Cart = require('./models/cartModel');
-const Message = require('./models/messageModel');
-const Product = require('./models/productModel');
 
-const Dao = {
-  // Funciones para interactuar con MongoDB
+const db = mongoose.connection;
 
-  createCart: async (cartData) => {
-    return await Cart.create(cartData);
-  },
+// Manejo de errores de conexión
+db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
+db.once('open', () => {
+  console.log('Conexión exitosa a MongoDB');
+});
 
-  getMessages: async () => {
-    return await Message.find();
-  },
-
-  createMessage: async (messageData) => {
-    return await Message.create(messageData);
-  },
-
-  
-};
-
-module.exports = Dao;
+module.exports = db;
