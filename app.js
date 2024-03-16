@@ -10,7 +10,7 @@ const { generateUniqueId } = require('./utils');
 const ProductManager = require('./ProductManager');
 const Dao = require('./Dao/dao');
 
-const app = express();
+
 const server = http.createServer(app);
 const io = socketIO(server);
 
@@ -67,4 +67,25 @@ app.get('/chat', (req, res) => {
 // Iniciar el servidor
 server.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
+});
+
+// app.js
+const express = require('express');
+const app = express();
+
+// Importar las rutas
+const authRoutes = require('./routes/authRoutes');
+
+// Configurar el motor de plantillas Handlebars
+app.set('view engine', 'handlebars');
+
+// Middleware para procesar datos del formulario
+app.use(express.urlencoded({ extended: true }));
+
+// Rutas
+app.use('/', authRoutes); // Rutas de autenticación
+
+// Escuchar en el puerto 3000
+app.listen(3000, () => {
+    console.log('Servidor en ejecución en el puerto 3000');
 });
