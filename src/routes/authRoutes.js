@@ -1,12 +1,16 @@
-// authRoutes.js
+
+
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const authController = require('../controllers/authController');
 
-// Ruta para mostrar el formulario de registro
 router.get('/register', authController.getRegister);
-
-// Ruta para procesar el formulario de registro
 router.post('/register', authController.postRegister);
+
+router.get('/login', authController.getLogin);
+router.post('/login', authController.postLogin);
+
+router.get('/logout', authController.getLogout);
 
 module.exports = router;

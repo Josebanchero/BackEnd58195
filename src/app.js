@@ -1,11 +1,15 @@
 
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const http = require('http');
 const socketIO = require('socket.io');
 const fs = require('fs').promises;
 const path = require('path');
+const passport = require('passport');
+const authRoutes = require('./routes/authRoutes');
+const passportConfig = require('./config/passport-config');
 
 
 
@@ -21,6 +25,25 @@ const port = 8080;
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'handlebars');
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', authRoutes);
+
+app.listen(3000, () => {
+    console.log('Servidor en ejecución en el puerto 3000');
+});
+
 
 const productManager = new ProductManager('productos.json');
 
@@ -105,4 +128,3 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
 });
-

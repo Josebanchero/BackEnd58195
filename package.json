@@ -7,12 +7,14 @@
         "start": "node app.js"
     },
     "dependencies": {
+        "bcrypt": "^5.1.1",
         "express": "^4.17.1",
         "express-handlebars": "^5.3.3",
         "mongoose": "^8.2.1",
+        "passport": "^0.7.0",
+        "passport-local": "^1.0.0",
         "socket.io": "^4.1.2"
     },
     "author": "Josefina Banchero",
     "license": "MIT"
-
-  }
+}
