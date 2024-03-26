@@ -8,10 +8,13 @@
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
-        "express": "^4.17.1",
+        "express": "^4.19.2",
         "express-handlebars": "^5.3.3",
+        "express-session": "^1.18.0",
         "mongoose": "^8.2.1",
+        "node": "^21.7.1",
         "passport": "^0.7.0",
+        "passport-github2": "^0.1.12",
         "passport-local": "^1.0.0",
         "socket.io": "^4.1.2"
     },

@@ -1,4 +1,4 @@
-const Product = require('../models/productModel');
+const Product = require('../../Dao/models/productModel');
 
 const productController = {
   getAllProducts: async (req, res) => {

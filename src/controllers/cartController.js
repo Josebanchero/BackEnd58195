@@ -1,4 +1,4 @@
-const Cart = require('../models/cartModel');
+const Cart = require('../../Dao/models/cartModel');
 
 const cartController = {
   deleteProductFromCart: async (req, res) => {

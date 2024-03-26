@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Mi Tienda en Línea</title>
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a Mi Tienda en Línea</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/productos">Productos</a></li>
+                <li><a href="/contacto">Contacto</a></li>
+                
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="banner">
+            <h2>Descubre nuestras últimas ofertas</h2>
+            <p>¡No te pierdas nuestras promociones exclusivas!</p>
+            <a href="/productos" class="btn">Ver Productos</a>
+        </section>
+
+        <section class="featured-products">
+            <h2>Productos Destacados</h2>
+            <div class="product-list">
+                {{#each products}}
+                    <div class="product">
+                        <img src="{{this.image}}" alt="{{this.name}}">
+                        <h3>{{this.name}}</h3>
+                        <p class="price">${{this.price}}</p>
+                        <a href="/productos/{{this.id}}" class="btn">Ver Detalles</a>
+                    </div>
+                {{/each}}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; {{year}} Mi Tienda en Línea. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="scripts.js"></script> 
+</html>

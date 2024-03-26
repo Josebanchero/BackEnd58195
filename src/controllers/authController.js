@@ -1,7 +1,8 @@
-
+// authController.js
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
+const User = require('../../Dao/models/User');
+
 
 exports.getRegister = (req, res) => {
     res.render('register');
@@ -33,3 +34,5 @@ exports.getLogout = (req, res) => {
     req.logout();
     res.redirect('/login');
 };
+
+
