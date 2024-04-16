@@ -1,67 +1,83 @@
-const express = require('express');
-const session = require('express-session');
+
 const passport = require('passport');
-const GitHubStrategy = require('passport-github2').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
+const User = require('../models/User');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 
-const app = express();
-
-// Configurar sesión
-app.use(session({
-  secret: 'secreto', // Cambiar esto por una clave secreta más segura
-  resave: false,
-  saveUninitialized: false
+passport.use(new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: 'TU_SECRET_KEY'
+}, async (payload, done) => {
+    try {
+        const user = await User.findById(payload.sub);
+        if (!user) {
+            return done(null, false);
+        }
+        return done(null, user);
+    } catch (error) {
+        return done(error, false);
+    }
 }));
 
-// Inicializar Passport y sesión
-app.use(passport.initialize());
-app.use(passport.session());
 
-// Configurar estrategia de autenticación de GitHub
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+}, async (email, password, done) => {
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return done(null, false, { message: 'Usuario no encontrado' });
+        }
+        // Aquí deberías comparar el password con el hash almacenado en la base de datos
+        if (password !== user.password) {
+            return done(null, false, { message: 'Contraseña incorrecta' });
+        }
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
 passport.use(new GitHubStrategy({
-    clientID: 't2c82cf5216686c128b48',
-    clientSecret: 'f6df8b032af2879a0a198aacaca802aba54bcc26',
-    callbackURL: 'http://localhost:3000/auth/github/callback',
-    
-    function (accessToken, refreshToken, profile, done) {
-    // Aquí puedes hacer lo que necesites con el perfil de usuario
-    return done(null, profile);}
-  }),
+    clientID: 'TU_CLIENT_ID',
+    clientSecret: 'TU_CLIENT_SECRET',
+    callbackURL: 'http://localhost:3000/auth/github/callback'
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        // Aquí deberías verificar si el usuario ya existe en la base de datos o crearlo si no existe
+        const user = await User.findOne({ email: profile.emails[0].value });
+        if (user) {
+            return done(null, user);
+        } else {
+            // Crea un nuevo usuario con los datos de GitHub
+            const newUser = new User({
+                first_name: profile.displayName,
+                email: profile.emails[0].value,
+                // Otros campos
+            });
+            await newUser.save();
+            return done(null, newUser);
+        }
+    } catch (error) {
+        return done(error);
+    }
+}));
 
-);
-
-// Serializar y deserializar usuario
-passport.serializeUser(function(user, done) {
-  done(null, user);
+// Serializa y deserializa el usuario
+passport.serializeUser((user, done) => {
+    done(null, user.id);
 });
 
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
 });
 
-// Ruta de inicio de sesión
-app.get('/login', function(req, res) {
-  res.send('Página de inicio de sesión');
-});
-
-// Ruta de autenticación de GitHub
-app.get('/auth/github',
-  passport.authenticate('github', { scope: ['user:email'] }));
-
-// Ruta de retorno después de la autorización en GitHub
-app.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Redirige a la página de inicio u otra página de tu aplicación
-    res.redirect('/');
-  });
-
-// Ruta principal
-app.get('/', function(req, res) {
-  res.send('Página principal');
-});
-
-// Iniciar servidor
-const port = process.env.PORT || 3000;
-app.listen(port, function() {
-  console.log('Servidor iniciado en http://localhost3000:' + port);
-});
+module.exports = passport;
